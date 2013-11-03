@@ -1,22 +1,30 @@
-console.log("starting ficlet");
+console.log("Starting ficlet.");
 
 var urlSplit = document.URL.split('/');
 urlSplit.length = 5;
-if (urlSplit[2] != "www.fanfiction.net" && urlSplit[2] != "www.fictionpress.com" || urlSplit[3] != "s") {
-    alert("Please run ficlet on a story on www.fanfiction.net or www.fictionpress.com");
+if ((urlSplit[2] != "www.fanfiction.net" && urlSplit[2] != "m.fanfiction.net") && (urlSplit[2] != "www.fictionpress.com" && urlSplit[2] != "m.fictionpress.com") || urlSplit[3] != "s") {
+    alert("Please run ficlet on a story on fanfiction.net or fictionpress.com");
     throw("Incompatible webpage.");
 }
 var baseUrl = urlSplit.join('/') + '/';
 
+var mobile;
+if (urlSplit[2] == "m.fanfiction.net" || urlSplit[2] == "m.fictionpress.com") mobile = true;
+
 var documentTitle = document.title;
 
-var chapStrRaw = document.getElementById('content_wrapper_inner').getElementsByClassName('xgray xcontrast_txt')[0].innerHTML;
-var chapStrClean = chapStrRaw.substring(chapStrRaw.indexOf("Chapters"));
-chapStrClean = chapStrClean.substring(10, chapStrClean.indexOf(" -"));
-var numChapters = parseInt(chapStrClean);
-
-var titleStr = document.getElementsByClassName("xcontrast_txt")[4].innerHTML;
-var authorStr = document.getElementsByClassName("xcontrast_txt")[6].innerHTML;
+if (mobile) {
+    var numChapters = document.getElementById("jump").options.length - 1;
+    var titleStr = /<b>(.*?)<\/b>/.exec(document.getElementById("content").innerHTML)[0];
+    titleStr = titleStr.substring(3, titleStr.indexOf("</b>"));
+    var authorStr = /<a(.*?)<\/a>/.exec(document.getElementById("content").innerHTML)[0];
+    authorStr = authorStr.substring(authorStr.indexOf(">") + 1, authorStr.indexOf("</a>"));
+}
+else {
+    var numChapters = document.getElementById("chap_select").options.length;
+    var titleStr = document.getElementsByClassName("xcontrast_txt")[4].innerHTML;
+    var authorStr = document.getElementsByClassName("xcontrast_txt")[6].innerHTML;
+}
 
 var chapterIdx = 1;
 var chapterText = new Array();
@@ -24,12 +32,22 @@ var chapterHTML = new Array();
 var chapterTitle = new Array();
 
 var downloadFrame = document.createElement('iframe');
-downloadFrame.width = screen.availWidth;
-downloadFrame.height = 480;
+downloadFrame.width = 0;
+downloadFrame.height = 0;
+downloadFrame.style.visibility="hidden";
 document.body.appendChild(downloadFrame);
 downloadFrame.onload = function() {
-    chapterText[chapterIdx] = downloadFrame.contentDocument.getElementById("storytext").innerHTML;
-    chapterTitle[chapterIdx] = document.getElementById("chap_select").options.item(chapterIdx - 1).innerHTML;
+    if (mobile) {
+        chapterText[chapterIdx] = downloadFrame.contentDocument.getElementById("storycontent").innerHTML;
+        chapterTitle[chapterIdx] = downloadFrame.contentDocument.getElementById("content").innerHTML;
+        chapterTitle[chapterIdx] = chapterTitle[chapterIdx].substring(chapterTitle[chapterIdx].indexOf("</span>") + 7);
+        chapterTitle[chapterIdx] = chapterTitle[chapterIdx].substring(1, chapterTitle[chapterIdx].indexOf("<br>"));
+        chapterTitle[chapterIdx] = String(chapterIdx) + ". " + chapterTitle[chapterIdx];
+    }
+    else {
+        chapterText[chapterIdx] = downloadFrame.contentDocument.getElementById("storytext").innerHTML;
+        chapterTitle[chapterIdx] = document.getElementById("chap_select").options.item(chapterIdx - 1).innerHTML;
+    }
     chapterHTML[chapterIdx] = '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ops="http://www.idpf.org/2007/ops" encoding="UTF-8"><head><meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/><link rel="stylesheet" type="text/css" href="../style.css"/><title>' + chapterTitle[chapterIdx] + '</title></head><body>\n  <h1>' + chapterTitle[chapterIdx] + '</h1><div id="chapterText" class="chapterText">' + chapterText[chapterIdx] + '</div></body></html>';
     console.log("Downloaded chapter " + String(chapterIdx) + "/" + String(numChapters) + ".");
     document.title = '[Downloading][' + String(chapterIdx) + "/" + String(numChapters) + ']' + documentTitle;
@@ -158,6 +176,7 @@ async.series([
     function(callback) {
         saveAs(zippedBlob, authorStr + ' - ' + titleStr + '.epub');
         document.title = "[Finished]" + documentTitle;
+        downloadFrame.parentNode.removeChild(downloadFrame);
         callback();
     },
 ]);
