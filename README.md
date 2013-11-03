@@ -8,6 +8,6 @@ To use ficlet, save this code as the URL of a bookmark:
 
 Then, open the bookmark while veiwing a fanfiction.net or fictionpress.com story.
 
-Tested on Firefox 23, Chrome 30, and Internet Explorer 10.
+Tested on Firefox 25, Chrome 30, and Internet Explorer 10 (Desktop and Metro).
 
 Todo: Cover images, more metadata.
