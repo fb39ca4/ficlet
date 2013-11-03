@@ -3,7 +3,7 @@ console.log("starting ficlet");
 var urlSplit = document.URL.split('/');
 urlSplit.length = 5;
 if (urlSplit[2] != "www.fanfiction.net" && urlSplit[2] != "www.fictionpress.com" || urlSplit[3] != "s") {
-    alert("Please run this ficlet on a story on www.fanfiction.net or www.fictionpress.com");
+    alert("Please run ficlet on a story on www.fanfiction.net or www.fictionpress.com");
     throw("Incompatible webpage.");
 }
 var baseUrl = urlSplit.join('/') + '/';
