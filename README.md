@@ -1,6 +1,6 @@
 ficlet
 ======
-Ficlet is a bookmarklet to download stories from fanfiction.net and fictionpress.com, and compile and save them into an .epub file. Currently, the mobile versions of these sites are not supported.
+Ficlet is a bookmarklet to download stories from fanfiction.net and fictionpress.com, and compile and save them into an .epub file. Both the mobile and desktop versions of the sites are supported.
 
 To use ficlet, save this code as the URL of a bookmark:
 
@@ -9,5 +9,7 @@ To use ficlet, save this code as the URL of a bookmark:
 Then, open the bookmark while veiwing a fanfiction.net or fictionpress.com story.
 
 Tested on Firefox 25, Chrome 30, and Internet Explorer 10 (Desktop and Metro).
+
+If the script appears to stop working when the title bar is displaying [Compressing], clear your browser cache and reload the webpage.
 
 Todo: Cover images, more metadata.
