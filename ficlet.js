@@ -8,8 +8,7 @@ if ((urlSplit[2] != "www.fanfiction.net" && urlSplit[2] != "m.fanfiction.net") &
 }
 var baseUrl = urlSplit.join('/') + '/';
 
-var mobile;
-if (urlSplit[2] == "m.fanfiction.net" || urlSplit[2] == "m.fictionpress.com") mobile = true;
+var mobile = (urlSplit[2] == "m.fanfiction.net" || urlSplit[2] == "m.fictionpress.com") ? true : false;
 
 var documentTitle = document.title;
 
