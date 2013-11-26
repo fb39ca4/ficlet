@@ -62,6 +62,7 @@ downloadFrame.onload = function() {
         if (numChapters == 1) chapterTitle[chapterIdx] = titleStr;
         else chapterTitle[chapterIdx] = document.getElementById("chap_select").options.item(chapterIdx - 1).innerHTML;
     }
+    chapterText[chapterIdx] = chapterText[chapterIdx].replace(/\<hr.*?\>/g, "<hr>");
     chapterHTML[chapterIdx] = '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ops="http://www.idpf.org/2007/ops" encoding="UTF-8"><head><meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/><link rel="stylesheet" type="text/css" href="../style.css"/><title>' + chapterTitle[chapterIdx] + '</title></head><body>\n <h1>' + chapterTitle[chapterIdx] + '</h1><div id="chapterText" class="chapterText">' + chapterText[chapterIdx] + '</div></body></html>';
     console.log("Downloaded chapter " + String(chapterIdx) + "/" + String(numChapters) + ".");
     document.title = '[Downloading][' + String(chapterIdx) + "/" + String(numChapters) + ']' + documentTitle;
